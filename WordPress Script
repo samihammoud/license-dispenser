@@ -60,7 +60,7 @@ function auto_download_devkit_on_submit($entry_id, $form_id) {
             $download_url = site_url("/wp-content/plugins/license-handler/builds/$zip_name");
 
             // Start session only now, write, then close immediately
-            //Without sessions: the JS on page reload wouldn’t know which download URL belongs to which user.
+            //Without sessions: php loses info of variables; need for persistent state
             if (!session_id()) session_start();
             $_SESSION['devkit_download_url'] = esc_url_raw($download_url);
             session_write_close();
