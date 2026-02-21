@@ -1,3 +1,5 @@
+//helper function
+
 function clean_segment($str) {
     $str = strtoupper($str);
     $str = str_replace(['-', '/', '.', ' '], '', $str);
@@ -14,11 +16,12 @@ function build_safe_slug($data) {
 }
 
 // NOTE: no global session_start() on init
-
 add_action('frm_after_create_entry', 'auto_download_devkit_on_submit', 20, 2);
 function auto_download_devkit_on_submit($entry_id, $form_id) {
     if ($form_id != 5) return;
 
+
+//HOOKS INTO POST REQUEST
     $kit           = $_POST['item_meta'][19] ?? '';
     $platform      = $_POST['item_meta'][20] ?? '';
     $device_family = $_POST['item_meta'][21] ?? '';
@@ -57,6 +60,7 @@ function auto_download_devkit_on_submit($entry_id, $form_id) {
             $download_url = site_url("/wp-content/plugins/license-handler/builds/$zip_name");
 
             // Start session only now, write, then close immediately
+            //Without sessions: the JS on page reload wouldn’t know which download URL belongs to which user.
             if (!session_id()) session_start();
             $_SESSION['devkit_download_url'] = esc_url_raw($download_url);
             session_write_close();
